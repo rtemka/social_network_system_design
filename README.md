@@ -20,7 +20,8 @@ The social network for travelers is a web service for all travel and adventure l
 - **Activity**:
     - 30 posts per user on average monthly
     - 3 user daily sessions with 10 view post requests per session
-    - 10 user ratings and 10 user comments daily
+    - 10 user ratings daily
+    - 30 user comments daily
     - 5 user search requests for posts with popular travel destinations daily
     - 3 user feed request daily, 3 page requests on average
 - **Limits**:
@@ -33,7 +34,7 @@ The social network for travelers is a web service for all travel and adventure l
     - 20 subscriptions per user
     - feed page size is 10 posts
 - **Timings**:
-    - publish post - 2-3 seconds
+    - publish post - 1-1.5 seconds
     - view post - 1-2 seconds
     - publish rating and comment - 1-2 seconds
     - view feed - 2 seconds
@@ -61,10 +62,14 @@ RPS:
     RPS = 10_000_000 * 3 * 10 / 86400 ~= 3500
 
 Traffic:
+    
+    Post Metadata average size is 500B
+    Post Metadata Write = 120 * 500B = 60 KB/s 
+    Post Metadata Read = 120 * 500B = 60 KB/s 
 
-    Average post size is 500B + ~1.5MB photo ~= 1.5MB 
-    Write = 120 * 1.5MB = 180 MB/s
-    Read  = 3500 * 1.5MB = 5 GB/s
+    Post Media average size is ~1.5MB 
+    Post Media Write = 120 * 1.5MB = 180 MB/s
+    Post Meida Read  = 3500 * 1.5MB = 5 GB/s
 
 ### ratings
 RPS:
@@ -74,7 +79,7 @@ RPS:
     RPS = 10_000_000 * 10 /  86400 ~= 1150 
 
     Read
-    Ratings are fetched as part of the view post request
+    RPS = 10_000_000 * 10 /  86400 ~= 1150 
 
 Traffic:
 
@@ -86,11 +91,11 @@ Traffic:
 RPS:
 
     Write
-    Each user leaves 10 comments daily
-    RPS = 10_000_000 * 10 / 86400 ~= 1150 
+    Each user leaves 30 comments daily
+    RPS = 10_000_000 * 30 / 86400 ~= 3500 
 
     Read
-    Comments are fetched as part of the view post request(page size=10)
+    RPS = 10_000_000 * 30 / 86400 ~= 3500 
 
 Traffic:
 
