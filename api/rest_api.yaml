@@ -50,6 +50,8 @@ paths:
           description: Invalid ID supplied
         '404':
           description: User not found
+        '500':
+          description: Internal Server Error
   /users:
     post:
       tags:
@@ -79,6 +81,8 @@ paths:
                 $ref: '#/components/schemas/ApiResponse'
         '400':
           description: Invalid user info supplied
+        '500':
+          description: Internal Server Error
   /users/{id}/subscriptions/{userId}:
     post:
       tags:
@@ -130,6 +134,8 @@ paths:
       responses:
         '200':
           description: Successful operation
+        '500':
+          description: Internal Server Error
   /posts/{id}:
     get:
       tags:
@@ -159,6 +165,8 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Post not found
+        '500':
+          description: Internal Server Error
   /posts:
     get:
       tags:
@@ -207,6 +215,8 @@ paths:
           description: Invalid pageNum supplied
         '404':
           description: Posts not found
+        '500':
+          description: Internal Server Error
     post:
       tags:
         - Posts
@@ -238,6 +248,8 @@ paths:
                 $ref: '#/components/schemas/ApiResponse'
         '400':
           description: Invalid post fields supplied
+        '500':
+          description: Internal Server Error
   /posts/{postId}/ratings:
     get:
       tags:
@@ -253,18 +265,35 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: pageSize
+          in: query
+          description: Maximum page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: pageToken
+          in: query
+          description: Page token
+          required: false
+          schema:
+            type: string
+            example: 'aGV5LCB2b3ZhIQo='
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Ratings'
+                $ref: '#/components/schemas/TravelPostCommentPage'
             application/xml:
               schema:
-                $ref: '#/components/schemas/Ratings'
+                $ref: '#/components/schemas/TravelPostCommentPage'
         '404':
           description: Post not found
+        '500':
+          description: Internal Server Error
     post:
       tags:
         - Ratings
@@ -301,6 +330,8 @@ paths:
                 $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Post not found
+        '500':
+          description: Internal Server Error
     delete:
       tags:
         - Ratings
@@ -318,6 +349,8 @@ paths:
       responses:
         '200':
           description: successful operation
+        '500':
+          description: Internal Server Error
   /posts/{postId}/comments:
     get:
       tags:
@@ -360,6 +393,8 @@ paths:
                 $ref: '#/components/schemas/TravelPostCommentPage'
         '404':
           description: Post not found
+        '500':
+          description: Internal Server Error
     post:
       tags:
         - Comments
@@ -389,6 +424,8 @@ paths:
           description: successful operation
         '404':
           description: Post not found
+        '500':
+          description: Internal Server Error
   /places:
     get:
       tags:
@@ -431,6 +468,8 @@ paths:
                 $ref: '#/components/schemas/TravelPostPage'
         '404':
           description: Posts not found
+        '500':
+          description: Internal Server Error
 components:
   schemas:
     User:
@@ -532,6 +571,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Comment'
+        nextPageToken:
+          type: string
+          example: 'aGV5LCB2b3ZhIQo='
+    TravelPostRatingPage:
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rating'
         nextPageToken:
           type: string
           example: 'aGV5LCB2b3ZhIQo='
