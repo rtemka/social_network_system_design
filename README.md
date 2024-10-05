@@ -115,3 +115,20 @@ Traffic:
     Average feed size = post size * 10 = 15MB 
     Read  = 347 * 15MB ~= 5 GB/s
 
+## Disks Usage (for 1 year)
+Estimation:
+
+    Total Disk Usage:
+    WriteTraffic = Posts(180 MB/s) + Ratings(18 KB/s) + Comments(140 KB/s) ~= 181 MB/s
+    ReadTraffic = Posts(5 GB/s) + Ratings(56 KB/s) + Comments(5 MB/s) + Feed(5 GB/s) ~= 10 GB/s
+    Traffic = WriteTraffic + ReadTraffic ~= 11 GB/s
+    IOPS = 3620 + 2300 + 7000 + 347 ~= 13500
+
+    Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
+    Capacity per year = 86400 * 365 * 181 = 5.1 PB
+    Disks_for_capacity = 5.1 PB / 100 TB = 51 DISKS
+    Disks_for_throughput = 11 GB/s / 500 MB/s = 22 DISKS
+    Disks_for_iops = 13500 / 1000 = 14 DISKS
+
+    Disks = max(51, 22, 14) = 51 DISKS
+
