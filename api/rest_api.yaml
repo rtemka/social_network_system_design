@@ -1,0 +1,611 @@
+openapi: 3.0.3
+info:
+  title: Social Network For Travelers
+  description: |-
+    The social network for travelers is a web service for all travel and adventure lovers, where you can share photos and impressions of visited places, as well as follow and comment on the adventures of other travelers.
+  contact:
+    email: rybakov333@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://travelers-network.io/api/v1
+tags:
+  - name: Posts
+    description: Create, Get, List Travel Posts
+  - name: Ratings
+    description: Add, Remove or List ratings
+  - name: Comments
+    description: Add, Remove or List comments
+  - name: Users
+    description: Create/Get/Subscribe/Unsubscribe Users
+paths:
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user info
+      description: Returns a single User
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create User
+      description: Create User
+      operationId: createUser
+      requestBody:
+        description: Create User in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid user info supplied
+        '500':
+          description: Internal Server Error
+  /users/{id}/subscriptions/{userId}:
+    post:
+      tags:
+        - Users
+      summary: Subscribe to the user
+      description: Subscribe To User
+      operationId: SubscribeToUser
+      parameters:
+        - name: id
+          in: path
+          description: ID of subscriber
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          description: ID of user to subscribe to
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: User not found
+    delete:
+      tags:
+        - Users
+      summary: Unsubscribe from the user
+      description: Unsubscribe from User
+      operationId: UnsubscribeFromUser
+      parameters:
+        - name: id
+          in: path
+          description: ID of subscriber
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          description: ID of user to unsubscribe from
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Server Error
+  /posts/{id}:
+    get:
+      tags:
+        - Posts
+      summary: Find travel post by ID
+      description: Returns a single travel post
+      operationId: getPostById
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TravelPost'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: List travel posts
+      description: Returns a list of travel posts
+      operationId: listPosts
+      parameters:
+        - name: authorId
+          in: query
+          description: Filter travel posts by author(s)
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+              example: 4321
+            example: [2345, 566778]
+        - name: pageSize
+          in: query
+          description: Maximum page size(default is 10, max is 10)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: pageToken
+          in: query
+          description: Page token
+          required: false
+          schema:
+            type: string
+            example: 'aGV5LCB2b3ZhIQo='
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPostPage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TravelPostPage'
+        '400':
+          description: Invalid pageNum supplied
+        '404':
+          description: Posts not found
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - Posts
+      summary: Create Travel Post
+      description: Create Travel Post
+      operationId: createPost
+      requestBody:
+        description: Create Travel Post in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/TravelPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelPost'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid post fields supplied
+        '500':
+          description: Internal Server Error
+  /posts/{postId}/ratings:
+    get:
+      tags:
+        - Ratings
+      summary: List travel post ratings
+      description: Returns a list of travel post ratings
+      operationId: listPostRatings
+      parameters:
+        - name: postId
+          in: path
+          description: Post id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pageSize
+          in: query
+          description: Maximum page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: pageToken
+          in: query
+          description: Page token
+          required: false
+          schema:
+            type: string
+            example: 'aGV5LCB2b3ZhIQo='
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPostCommentPage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TravelPostCommentPage'
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - Ratings
+      summary: Add travel post rating
+      description: Returns a list of travel post ratings
+      operationId: createPostRating
+      parameters:
+        - name: postId
+          in: path
+          description: Post id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Create Travel Post Rating in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Ratings
+      summary: Remove travel post rating
+      description: Deletes travel post rating
+      operationId: deletePostRating
+      parameters:
+        - name: postId
+          in: path
+          description: Post id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '500':
+          description: Internal Server Error
+  /posts/{postId}/comments:
+    get:
+      tags:
+        - Comments
+      summary: List travel post comments
+      description: Returns a list of travel post comments
+      operationId: listPostComments
+      parameters:
+        - name: postId
+          in: path
+          description: Post id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pageSize
+          in: query
+          description: Maximum page size(default is 10, max is 10)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: pageToken
+          in: query
+          description: Page token
+          required: false
+          schema:
+            type: string
+            example: 'aGV5LCB2b3ZhIQo='
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPostCommentPage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TravelPostCommentPage'
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - Comments
+      summary: Add travel post comment
+      description: Returns a list of travel post comment
+      operationId: createPostComment
+      parameters:
+        - name: postId
+          in: path
+          description: Post id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Create Travel Post Comment in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+  /places:
+    get:
+      tags:
+        - Posts
+      summary: List travel posts close to place
+      description: Returns a list of popular travel post close to specified location
+      operationId: listLocationTopPosts
+      parameters:
+        - name: place
+          in: query
+          description: Travel place
+          required: true
+          schema:
+            type: string
+            example: 'Zanzibar'
+        - name: pageSize
+          in: query
+          description: Maximum page size(default is 10, max is 10)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: pageToken
+          in: query
+          description: Page token
+          required: false
+          schema:
+            type: string
+            example: 'aGV5LCB2b3ZhIQo='
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPostPage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TravelPostPage'
+        '404':
+          description: Posts not found
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    User:
+      properties:
+        id: 
+          type: integer
+          format: int64
+          example: 180
+        email: 
+          type: string
+          format: email
+          example: 'rybakov@yandex.ru'
+    TravelPost:
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1024
+        author_id:
+          type: integer
+          format: int64
+          example: 180
+        title:
+          type: string
+          format: string
+          example: 'post title'
+        description:
+          type: string
+          format: string
+          example: 'post description'
+        location:
+          $ref: '#/components/schemas/Location'
+        photos:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            format: binary
+            example: 'c2ZzZGZzZnNmc2Rmc2QK'
+    Location:
+      properties:
+        longitude:
+          type: number
+          format: decimal
+          example: 45.113578
+        latitude:
+          type: number
+          format: decimal
+          example: 38.912494
+    TravelPostPage:
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TravelPost'
+        nextPageToken:
+          type: string
+          example: 'aGV5LCB2b3ZhIQo='
+    Ratings:
+      properties:
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rating'
+    Rating:
+      properties:
+        authorId:
+          type: integer
+          format: int64
+          example: 4321
+        postId:
+          type: integer
+          format: int64
+          example: 1234
+        rate:
+          type: string
+          enum:
+            - 👍
+            - 👎
+    Comment:
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 5678 
+        authorId:
+          type: integer
+          format: int64
+          example: 4321
+        txt:
+          type: string
+          example: 'test comment'
+    TravelPostCommentPage:
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+        nextPageToken:
+          type: string
+          example: 'aGV5LCB2b3ZhIQo='
+    TravelPostRatingPage:
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rating'
+        nextPageToken:
+          type: string
+          example: 'aGV5LCB2b3ZhIQo='
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 200
+        type:
+          type: string
+          example: 'CREATE'
+        message:
+          type: string
+          example: 'successfull'
+      xml:
+        name: '#default'
+  requestBodies:
+    TravelPost:
+      description: Post object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TravelPost'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/TravelPost'
+
