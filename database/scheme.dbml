@@ -1,4 +1,4 @@
-// Target DB = POSTGRESQL
+// Target database = POSTGRESQL
 
 Table travel_posts {
   id integer [primary key]
@@ -24,8 +24,9 @@ Table users {
 
 Table comments {
   id integer [primary key]
-  author_id integer [ref: >  users.id]
+  author_id integer [ref: > users.id]
   travel_post_id integer [ref: > travel_posts.id]
+  reply_id integer [ref: - comments.id]
   txt text
 
   indexes {
@@ -49,7 +50,7 @@ Table ratings {
 table photos {
   id integer [primary key]
   travel_post_id integer [ref: > travel_posts.id]
-  content blob
+  uri varchar [note: 'link to photo blob in object storage']
 
   indexes {
     travel_post_id [type: btree]
@@ -75,7 +76,7 @@ table geo {
   }
 
   note {
-    'reference table with geo spatial data, downaloaded from external source'
+    'reference table with geo spatial data, downloaded from external source'
   } 
 }
 

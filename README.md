@@ -79,13 +79,14 @@ RPS:
     RPS = 10_000_000 * 10 /  86400 ~= 1150 
 
     Read
-    RPS = 10_000_000 * 10 /  86400 ~= 1150 
+    Each user makes 30 reads by batch of 100 ratings
+    RPS = 10_000_000 * 30 / 86400 ~= 3500 
 
 Traffic:
 
-    Average rating size ~= 16 bytes
-    Write = 1150 * 16 = 18 KB/s
-    Read  = 3500 * 16 = 56 KB/s
+    Average rating size ~= 32 bytes
+    Write = 1150 * 32 = 34 KB/s
+    Read  = 3500 * 32 = 112 KB/s
 
 ### comments
 RPS:
@@ -100,7 +101,7 @@ RPS:
 Traffic:
 
     Average comment size ~= 120 bytes
-    Write = 1150 * 120 = 138 KB/s
+    Write = 3500 * 120 = 4 MB/s
     Read  = 3500 * 120 * 10 = 4 MB/s
 
 ### feeds
@@ -116,19 +117,71 @@ Traffic:
     Read  = 347 * 15MB ~= 5 GB/s
 
 ## Disks Usage (for 1 year)
-Estimation:
 
-    Total Disk Usage:
-    WriteTraffic = Posts(180 MB/s) + Ratings(18 KB/s) + Comments(140 KB/s) ~= 181 MB/s
-    ReadTraffic = Posts(5 GB/s) + Ratings(56 KB/s) + Comments(5 MB/s) + Feed(5 GB/s) ~= 10 GB/s
-    Traffic = WriteTraffic + ReadTraffic ~= 11 GB/s
-    IOPS = 3620 + 2300 + 7000 + 347 ~= 13500
+### posts disk usage
+
+    Posts Media:
+    Traffic = 180 MB/s + 5 GB/s ~= 5.2 GB/s
+    IOPS = 3620
 
     Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
-    Capacity per year = 86400 * 365 * 181 = 5.1 PB
+    Capacity per year = 86400 * 365 * 180 MB = 5.1 PB
     Disks_for_capacity = 5.1 PB / 100 TB = 51 DISKS
-    Disks_for_throughput = 11 GB/s / 500 MB/s = 22 DISKS
-    Disks_for_iops = 13500 / 1000 = 14 DISKS
+    Disks_for_throughput = 5 GB/s / 500 MB/s = 10 DISKS
+    Disks_for_iops = 3620 / 1000 = 4 DISKS
 
-    Disks = max(51, 22, 14) = 51 DISKS
+    Disks = max(51, 10, 4) = 51 DISKS
+
+    Posts Metadata:
+    Traffic = 60 KB/s + 60 KB/s = 120 KB/s
+    IOPS = 3620
+
+    Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
+    Capacity per year = 86400 * 365 * 120 KB = 3.7 TB
+    Disks_for_capacity = 5.1 TB / 100 TB = 1 DISKS
+    Disks_for_throughput = 120 KB/s / 500 MB/s = 1 DISKS
+    Disks_for_iops = 3620 / 1000 = 4 DISKS
+
+    Disks = max(1, 1, 4) = 4 DISKS
+
+### comments disk usage
+
+    Traffic = 4 MB/s + 4 MB/s ~= 8 MB/s
+    IOPS = 7000
+
+    Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
+    Capacity per year = 86400 * 365 * 4 MB = 126 TB
+    Disks_for_capacity = 126 TB / 100 TB = 2 DISKS
+    Disks_for_throughput = 4 MB/s / 500 MB/s = 1 DISKS
+    Disks_for_iops = 7000 / 1000 = 7 DISKS
+
+    Disks = max(2, 1, 7) = 7 DISKS
+
+### ratings disk usage
+
+    Traffic = 34 KB/s + 112 KB/s ~= 150 KB/s
+    IOPS = 4650
+
+    Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
+    Capacity per year = 86400 * 365 * 34 KB  = 1.1 TB
+    Disks_for_capacity = 1.1 TB / 100 TB = 1 DISKS
+    Disks_for_throughput = 34 KB/s / 500 MB/s = 1 DISKS
+    Disks_for_iops = 4650 / 1000 = 5 DISKS
+
+    Disks = max(1, 1, 5) = 5 DISKS
+
+### total disk usage
+
+    WriteTraffic = Posts(180 MB/s) + Ratings(34 KB/s) + Comments(4 MB/s) ~= 185 MB/s
+    ReadTraffic = Posts(5 GB/s) + Ratings(112 KB/s) + Comments(4 MB/s) + Feed(5 GB/s) ~= 10 GB/s
+    Traffic = WriteTraffic + ReadTraffic ~= 11 GB/s
+    IOPS = 3620 + 4650 + 7000 + 347 = 15617
+
+    Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
+    Capacity per year = 86400 * 365 * 185 = 5.8 PB
+    Disks_for_capacity = 5.8 PB / 100 TB = 58 DISKS
+    Disks_for_throughput = 11 GB/s / 500 MB/s = 22 DISKS
+    Disks_for_iops = 15617 / 1000 = 16 DISKS
+
+    Disks = max(58, 22, 16) = 58 DISKS
 
