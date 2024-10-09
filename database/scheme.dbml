@@ -1,4 +1,4 @@
-// Target database = POSTGRESQL
+// Target database = POSTGRESQL master-slave, replication-factor 3
 
 Table travel_posts {
   id integer [primary key]
