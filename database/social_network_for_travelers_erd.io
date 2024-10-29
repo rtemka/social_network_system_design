@@ -1,12 +1,21 @@
-// Target database = POSTGRESQL master-slave, replication-factor 3
+// This is logical scheme
+// of SocialNetworkForTravelers App
+// with microservice architecture.
+// Since it is microservice architecture
+// presented tables are separated into their own
+// services databases.
 
 Table travel_posts {
+  Note {
+    'TravelPost Service Database'
+  }
+
   id integer [primary key]
   author_id integer [ref: > users.id]
   title varchar
   description varchar
   geog_point geography [note: 'contains latitude and longitude']
-  
+
   indexes {
     geog_point [type: gist, note: 'https://postgis.net/workshops/postgis-intro/indexing.html']
     author_id [type: btree]
@@ -14,6 +23,10 @@ Table travel_posts {
 }
 
 Table users {
+  Note {
+    'User Service Database'
+  }
+
   id integer [primary key]
   email varchar
 
@@ -23,6 +36,10 @@ Table users {
 }
 
 Table comments {
+  Note {
+    'Comment Service Database'
+  }
+
   id integer [primary key]
   author_id integer [ref: > users.id]
   travel_post_id integer [ref: > travel_posts.id]
@@ -36,6 +53,10 @@ Table comments {
 }
 
 Table ratings {
+  Note {
+    'Rating Service Database'
+  }
+
   id integer [primary key]
   author_id integer [ref: >  users.id]
   travel_post_id integer [ref: > travel_posts.id]
@@ -48,6 +69,10 @@ Table ratings {
 }
 
 table photos {
+  Note {
+    'Media Service Database'
+  }
+
   id integer [primary key]
   travel_post_id integer [ref: > travel_posts.id]
   uri varchar [note: 'link to photo blob in object storage']
@@ -58,6 +83,10 @@ table photos {
 }
 
 table subscriptions {
+  Note {
+    'User Service Database'
+  }
+
   author_id integer [ref: > users.id]
   subscriber_id integer [ref: > users.id]
 
@@ -67,6 +96,10 @@ table subscriptions {
 }
 
 table geo {
+  Note {
+    'TravelPost Service Database. Reference table with geo spatial data, downloaded from external source'
+  }
+
   name varchar [note: 'human readable name of the location']
   name_lexemes tsvector [note: 'postgres tsvector type for full-text search or analogous']
   geo geography [note: 'geography spatial type, typically a multipolygon']
@@ -75,8 +108,5 @@ table geo {
     name_lexemes [type: gin, note: 'https://www.postgresql.org/docs/current/gin.html#GIN']
   }
 
-  note {
-    'reference table with geo spatial data, downloaded from external source'
-  } 
 }
 

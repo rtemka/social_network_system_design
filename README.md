@@ -65,7 +65,7 @@ Traffic:
     
     Post Metadata average size is 500B
     Post Metadata Write = 120 * 500B = 60 KB/s 
-    Post Metadata Read = 120 * 500B = 60 KB/s 
+    Post Metadata Read = 3500 * 500B = 1.8 MB/s 
 
     Post Media average size is ~1.5MB 
     Post Media Write = 120 * 1.5MB = 180 MB/s
@@ -133,16 +133,23 @@ Traffic:
     Disks = max(51, 10, 4) = 51 DISKS
 
     Posts Metadata:
-    Traffic = 60 KB/s + 60 KB/s = 120 KB/s
+    Traffic = 60 KB/s + 1.8 MB/s = 1.8 MB/s
     IOPS = 3620
 
     Disks Type = SSD(SATA) (Capacity ~= 100TB, IOPS ~= 1000, Throughput ~= 500 MB/s)
-    Capacity per year = 86400 * 365 * 120 KB = 3.7 TB
-    Disks_for_capacity = 5.1 TB / 100 TB = 1 DISKS
-    Disks_for_throughput = 120 KB/s / 500 MB/s = 1 DISKS
+    Capacity per year = 86400 * 365 * 1.8 MB = 56 TB
+    Disks_for_capacity = 56 TB / 100 TB = 1 DISKS
+    Disks_for_throughput = 1.8 MB/s / 500 MB/s = 1 DISKS
     Disks_for_iops = 3620 / 1000 = 4 DISKS
 
     Disks = max(1, 1, 4) = 4 DISKS
+
+### posts feed RAM usage
+
+    Each user has max 20 subscriptions * 2 (home_feed and subscription feed).
+    RAM Type = RAM DDR4 (Capacity = 64GB)
+    Capacity = 10000000 * 20 * 500B(Posts metadata) * 2 = 200 GB
+    Total = 5 RAM units 
 
 ### comments disk usage
 
@@ -184,4 +191,38 @@ Traffic:
     Disks_for_iops = 15617 / 1000 = 16 DISKS
 
     Disks = max(58, 22, 16) = 58 DISKS
+
+## Hosts
+
+### Travel Posts Service
+
+    Replication_factor = 3; Disks = 4
+    Hosts = 4 / 2 = 2 
+    Hosts_with_replication = 2 * 3 = 6 
+
+### Media Service 
+
+    Replication_factor = 2;
+    RAID 50 for storage
+    Each RAID consists of 10 disks by 22TB = 220TB  
+    Hosts = 51 / 10 = 5 
+    Hosts_with_replication = 2 * 5 = 10 
+
+### Posts Feed Service 
+
+    Replication_factor = 3; 4 DDR4(64GB)
+    Hosts = 4 / 4 = 1 
+    Hosts_with_replication = 3 * 1 = 3 
+    
+### Comments Service
+
+    Replication_factor = 3; Disks = 7 
+    Hosts = 7 / 2 = 4 
+    Hosts_with_replication = 3 * 4 = 12 
+
+### Ratings Service
+
+    Replication_factor = 3; Disks = 5
+    Hosts = 5 / 2 = 3 
+    Hosts_with_replication = 3 * 3 = 9 
 
