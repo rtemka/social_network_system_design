@@ -144,12 +144,12 @@ Traffic:
 
     Disks = max(1, 1, 4) = 4 DISKS
 
-### posts feed usage
+### posts feed RAM usage
 
     Each user has max 20 subscriptions * 2 (home_feed and subscription feed).
-    Disks Type = RAM DDR4 (Capacity = 64GB)
+    RAM Type = RAM DDR4 (Capacity = 64GB)
     Capacity = 10000000 * 20 * 500B(Posts metadata) * 2 = 200 GB
-    Disks = 5 DISKS 
+    Total = 5 RAM units 
 
 ### comments disk usage
 
@@ -202,13 +202,15 @@ Traffic:
 
 ### Media Service 
 
-    Replication_factor = 2; 
-    Hosts = 51 / 8(RAID) = 7 
-    Hosts_with_replication = 2 * 7 = 14 
+    Replication_factor = 2;
+    RAID 50 for storage
+    Each RAID consists of 10 disks by 22TB = 220TB  
+    Hosts = 51 / 10 = 5 
+    Hosts_with_replication = 2 * 5 = 10 
 
 ### Posts Feed Service 
 
-    Replication_factor = 3; Disks = 4 DDR4(64GB)
+    Replication_factor = 3; 4 DDR4(64GB)
     Hosts = 4 / 4 = 1 
     Hosts_with_replication = 3 * 1 = 3 
     
