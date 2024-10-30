@@ -40,6 +40,26 @@ The social network for travelers is a web service for all travel and adventure l
     - view feed - 2 seconds
 - **Data storage**: data is always kept  
 
+## Design overview
+
+For system design I have used [C4 model](https://c4model.com/).
+
+<p align="center">
+    </br><b>Level 1.</b> System context diagram</br></br>
+</p>
+
+<p align="center">
+  <img src="architecture/context.drawio.svg" />
+</p>
+
+<p align="center">
+    </br><b>Level 2.</b> Container diagram</br></br>
+</p>
+
+<p align="center">
+  <img src="architecture/container.drawio.svg" />
+</p>
+
 ## Basic calculations
 
 ### Daily active users
